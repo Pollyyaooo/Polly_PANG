@@ -100,12 +100,3 @@ Because the LED strip, buzzer, and switch competed for limited side space, the e
 - The **NeoPixel ring** remains on the side, where a narrow gap allows the LED glow to shine outward.
 - The shape is compact, durable, and optimized for consistent motion sensing.
 
----
-
-```markdown
-
-If you'd like, I can also help you create:
-- a **Bill of Materials** section  
-- a **Wiring Diagram** figure  
-- a **Flowchart** figure for the game loop  
-- a **polished intro paragraph** for class submissions
