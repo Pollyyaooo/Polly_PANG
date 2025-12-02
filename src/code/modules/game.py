@@ -7,7 +7,8 @@ from modules.buzzer_over import buzzer_over
 from modules.buzzer_win import buzzer_win
 from modules.highscore import load_scores, save_scores, check_new_highscore, insert_new_score
 from modules.initials_input import enter_initials
-
+from modules import led_game_over
+from modules import led_game_win
 
 # ========= 动作名称 =========
 ACTIONS = ["UP", "DOWN", "LEFT", "RIGHT"]
@@ -101,7 +102,7 @@ def show_text(display, main_group, text, y_offset=0):
 
 
 # ========= 游戏主循环（最新版，含 YOU WIN）=========
-def play_game(display, main_group, accelerometer, baseline, button, encoder, difficulty_level="Easy"):
+def play_game(display, main_group, accelerometer, baseline, button, encoder, pixels, difficulty_level="Easy"):
 
     multiplier = DIFFICULTY_MULTIPLIER[difficulty_level]
     reaction_time = DIFFICULTY_REACTION_TIME[difficulty_level]
@@ -128,10 +129,17 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, dif
 
             # ===== 每一步动作 =====
             for expected in sequence:
-                show_text(display, main_group, f"GO: {ACTION_DISPLAY[expected]}")
+
+                # ⭐ 同时显示 Level + Move（符合评分要求）
+                show_text(
+                    display,
+                    main_group,
+                    f"LEVEL {level}\n{ACTION_DISPLAY[expected]}"
+                )
 
                 start_t = time.monotonic()
                 detected = None
+
 
                 while time.monotonic() - start_t < reaction_time:
 
@@ -159,6 +167,7 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, dif
                 if detected != expected:
                     show_text(display, main_group, "GAME OVER")
                     buzzer_over()
+                    led_game_over.show(pixels)
                     time.sleep(1.5)
                     game_cleared = False
                     break
@@ -174,6 +183,7 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, dif
         if game_cleared:
             show_text(display, main_group, "YOU WIN!")
             buzzer_win()
+            led_game_win.show(pixels)
             time.sleep(2)
 
         # ======= 检查是否为新高分 =======
@@ -214,7 +224,7 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, dif
         show_text(display, main_group, f"Final Score:{score}")
         time.sleep(1.5)
 
-        show_text(display, main_group, "Press button to restart")
+        show_text(display, main_group, "Press to restart")
 
         while button.value:
             time.sleep(0.05)

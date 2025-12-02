@@ -3,7 +3,7 @@ import pwmio
 import time
 
 
-VOLUME = 1000   
+VOLUME = 200   
 
 def play_tone(freq, duration, pin=board.D1):
 

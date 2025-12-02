@@ -6,12 +6,20 @@ import adafruit_displayio_ssd1306
 import time
 import digitalio
 import rotaryio
+import neopixel
 
 # 子模块
 from modules import ball_bounce, buzzer_open, breathing_light
 from modules import calibration, difficulty, game
 import adafruit_adxl34x
 
+NUM_PIXELS = 27
+pixels = neopixel.NeoPixel(board.D7, NUM_PIXELS, auto_write=False)
+
+# 把 pixels 传给其它模块
+from modules import breathing_light
+from modules import game
+    
 # ===== 初始化 OLED =====
 displayio.release_displays()
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -40,17 +48,17 @@ for freq, dur in tones:
     buzzer_open.play_tone(freq, dur, pin=board.D1)
     end_t = time.monotonic() + dur
     while time.monotonic() < end_t:
-        breathing_light.breathing_step(start)
+        breathing_light.breathing_step(pixels, start)
         time.sleep(0.005)
     time.sleep(0.03)
 
 # ===== 动画阶段（呼吸灯继续） =====
 animation = ball_bounce.ball_bounce(display, main_group)
 for _ in animation:
-    breathing_light.breathing_step(start)
+    breathing_light.breathing_step(pixels, start)
     time.sleep(0.005)
 
-breathing_light.turn_off()
+breathing_light.turn_off(pixels)
 
 # ===== 校准阶段 =====
 baseline_x, baseline_y, baseline_z = calibration.zero_offset_calibration(
@@ -76,7 +84,8 @@ final_score = game.play_game(
     accelerometer=accelerometer,
     baseline=(baseline_x, baseline_y, baseline_z),
     button=button,
-    encoder=encoder,   # 传入同一个 encoder
+    encoder=encoder,
+    pixels=pixels,
     difficulty_level=difficulty_level
 )
 
