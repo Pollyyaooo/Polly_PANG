@@ -1,26 +1,22 @@
+import time
 import board
 import busio
 import displayio
 import i2cdisplaybus
-import adafruit_displayio_ssd1306
-import time
 import digitalio
 import rotaryio
 import neopixel
-
-
-from modules import ball_bounce, buzzer_open, breathing_light
-from modules import calibration, difficulty, game
 import adafruit_adxl34x
+import adafruit_displayio_ssd1306
 
-NUM_PIXELS = 27
+
+from modules import ball_bounce, buzzer_open, led_game_open, calibration, game
+
+# ========== NeoPixel ==========
+NUM_PIXELS = 22
 pixels = neopixel.NeoPixel(board.D7, NUM_PIXELS, auto_write=False)
 
-
-from modules import breathing_light
-from modules import game
-    
-
+# ========== OLED ==========
 displayio.release_displays()
 i2c = busio.I2C(board.SCL, board.SDA)
 display_bus = i2cdisplaybus.I2CDisplayBus(i2c, device_address=0x3C)
@@ -28,39 +24,36 @@ display = adafruit_displayio_ssd1306.SSD1306(display_bus, width=128, height=64)
 main_group = displayio.Group()
 display.root_group = main_group
 
-start = time.monotonic()
+start_time = time.monotonic()
 
-
+# ========== button ==========
 button = digitalio.DigitalInOut(board.D8)
 button.direction = digitalio.Direction.INPUT
 button.pull = digitalio.Pull.UP
 
-
-accelerometer = adafruit_adxl34x.ADXL345(i2c)
-
-
+# ========== Rotary Encoder ==========
 encoder = rotaryio.IncrementalEncoder(board.D3, board.D2)  # clk=D3, dt=D2
 
+# ========== accelerometer ==========
+accelerometer = adafruit_adxl34x.ADXL345(i2c)
 
-
+# ========== open ==========
 tones = [(440, 0.12), (660, 0.12), (880, 0.12)]
 for freq, dur in tones:
     buzzer_open.play_tone(freq, dur, pin=board.D1)
     end_t = time.monotonic() + dur
     while time.monotonic() < end_t:
-        breathing_light.breathing_step(pixels, start)
+        led_game_open.breathing_step(pixels, start_time)
         time.sleep(0.005)
     time.sleep(0.03)
 
-
 animation = ball_bounce.ball_bounce(display, main_group)
 for _ in animation:
-    breathing_light.breathing_step(pixels, start)
+    led_game_open.breathing_step(pixels, start_time)
     time.sleep(0.005)
+led_game_open.turn_off(pixels)
 
-breathing_light.turn_off(pixels)
-
-
+# ========== baseline ==========
 baseline_x, baseline_y, baseline_z = calibration.zero_offset_calibration(
     i2c=i2c,
     button=button,
@@ -69,24 +62,13 @@ baseline_x, baseline_y, baseline_z = calibration.zero_offset_calibration(
 )
 print("Baseline:", baseline_x, baseline_y, baseline_z)
 
-
-difficulty_level = difficulty.choose_difficulty(
-    encoder=encoder,
-    button=button,
-    display=display,
-    main_group=main_group
-)
-
-
-final_score = game.play_game(
+# ========== loop ==========
+game.play_game(
     display=display,
     main_group=main_group,
     accelerometer=accelerometer,
     baseline=(baseline_x, baseline_y, baseline_z),
     button=button,
     encoder=encoder,
-    pixels=pixels,
-    difficulty_level=difficulty_level
+    pixels=pixels
 )
-
-print("Final Score:", final_score)

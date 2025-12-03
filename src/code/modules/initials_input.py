@@ -6,7 +6,7 @@ import rotaryio
 from adafruit_display_text import label
 
 def enter_initials(display, main_group, encoder, button):
-
+    
     initials = ["A", "A", "A"]
     position = 0  
 

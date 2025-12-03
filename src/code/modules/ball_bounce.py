@@ -6,10 +6,10 @@ import math
 import time
 
 def ball_bounce(display, main_group, paddle_center_x=64, paddle_center_y=42, duration=2.5):
-
+    
     start_time = time.monotonic()
 
-
+    # color
     palette = displayio.Palette(2)
     palette[0] = 0x000000
     palette[1] = 0xFFFFFF
@@ -17,7 +17,7 @@ def ball_bounce(display, main_group, paddle_center_x=64, paddle_center_y=42, dur
     screen_width = display.width
     screen_height = display.height
 
- 
+    # circle
     paddle_bitmap = displayio.Bitmap(screen_width, screen_height, 2)
     paddle_grid = displayio.TileGrid(paddle_bitmap, pixel_shader=palette)
     main_group.append(paddle_grid)
@@ -25,7 +25,7 @@ def ball_bounce(display, main_group, paddle_center_x=64, paddle_center_y=42, dur
     radius_x = 40
     radius_y = 10
 
-  
+    # circle face
     for t in range(0, 360, 1):
         rad = math.radians(t)
         ex = int(paddle_center_x + radius_x * math.cos(rad))
@@ -33,7 +33,7 @@ def ball_bounce(display, main_group, paddle_center_x=64, paddle_center_y=42, dur
         if 0 <= ex < screen_width and 0 <= ey < screen_height:
             paddle_bitmap[ex, ey] = 1
 
-
+    # ball
     circle_layer_size = 16
     circle_bitmap = displayio.Bitmap(circle_layer_size, circle_layer_size, 2)
     circle_grid = displayio.TileGrid(circle_bitmap, pixel_shader=palette,
@@ -64,9 +64,9 @@ def ball_bounce(display, main_group, paddle_center_x=64, paddle_center_y=42, dur
                     if 0 <= px < circle_layer_size and 0 <= py < circle_layer_size:
                         circle_bitmap[px, py] = 1
 
-    
+    # loop
     while time.monotonic() - start_time < duration:
-       
+        # with breathing light
         yield
 
         circle_vy += gravity
@@ -93,7 +93,7 @@ def ball_bounce(display, main_group, paddle_center_x=64, paddle_center_y=42, dur
         display.refresh(minimum_frames_per_second=0)
         time.sleep(0.03)
 
-    
+    # stop
     while len(main_group) > 0:
         main_group.pop()
 
