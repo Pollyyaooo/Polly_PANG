@@ -17,7 +17,7 @@ ACTION_DISPLAY = {"UP": "UP", "DOWN": "DOWN", "LEFT": "LEFT", "RIGHT": "RIGHT"}
 
 # ========== choose difficulty ==========
 DIFFICULTY_MULTIPLIER = {"Easy": 1, "Normal": 2, "Hard": 3}
-DIFFICULTY_REACTION_TIME = {"Easy": 5.0, "Normal": 3, "Hard": 1.5}
+DIFFICULTY_REACTION_TIME = {"Easy": 5.0, "Normal": 3.0, "Hard": 1.5}
 
 # ========== counter ==========
 ACTION_COUNTER = {"UP": 0, "DOWN": 0, "LEFT": 0, "RIGHT": 0}

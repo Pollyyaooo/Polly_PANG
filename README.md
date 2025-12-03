@@ -31,7 +31,7 @@ The game is powered by a **Xiao ESP32-C3**, using a combination of motion sensin
 - Players must perform each action within a **reaction time** based on the chosen difficulty:  
   - Easy: 5 s  
   - Normal: 3 s  
-  - Hard: 1 s
+  - Hard: 1.5 s
 
 #### **Scoring System**
 - Each level has a **level score**:
