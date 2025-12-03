@@ -13,20 +13,21 @@ The game is powered by a **Xiao ESP32-C3**, using a combination of motion sensin
 
 ## **2. How the Game Works**
 
-### **1. Game Start**
+### **1. Game Preparation**
 - Upon powering on, the NeoPixel LEDs play a playful startup animation accompanied by a buzzer jingle and a white breathing-light effect.
 - The ADXL345 accelerometer performs **initial calibration**.
-- The player uses the **rotary encoder** to select a difficulty mode:  
-  **Easy / Normal / Hard** — each determines the allowed reaction time.
-- Pressing the encoder button begins the game.
 
 ---
 
 ### **2. Gameplay Loop**
 
 #### **Actions and Timing**
+- The player uses the **rotary encoder** to select a difficulty mode:  
+  **Easy / Normal / Hard** — each determines the allowed reaction time.
+- Each mode has 10 levels.
 - Each level generates a sequence of actions:  
 `Actions per level = Level × 2 + 2`
+- Pressing the encoder button begins the game.
 - Players must perform each action within a **reaction time** based on the chosen difficulty:  
 - **Easy:** 5 s  
 - **Normal:** 3 s  
