@@ -29,7 +29,7 @@ def save_scores(scores):
     if len(data_bytes) > NVM_SIZE:
         raise ValueError("High score data too large")
 
-    # 写入
+    
     microcontroller.nvm[:NVM_SIZE] = b"\x00" * NVM_SIZE
     microcontroller.nvm[:len(data_bytes)] = data_bytes
 

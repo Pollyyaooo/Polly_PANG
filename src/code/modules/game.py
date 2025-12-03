@@ -10,10 +10,10 @@ from modules.initials_input import enter_initials
 from modules import led_game_over
 from modules import led_game_win
 
-# ========= 动作名称 =========
+
 ACTIONS = ["UP", "DOWN", "LEFT", "RIGHT"]
 
-# 显示名称
+
 ACTION_DISPLAY = {
     "UP": "UP",
     "DOWN": "DOWN",
@@ -58,23 +58,23 @@ def detect_action(accel, baseline,
     dy = y - by
     dz = z - bz
 
-    # 衰减
+    
     for k in ACTION_COUNTER:
         ACTION_COUNTER[k] = max(0, ACTION_COUNTER[k] - 1)
 
-    # 左右
+    
     if dy > threshold_y:
         ACTION_COUNTER["LEFT"] += 1
     elif dy < -threshold_y:
         ACTION_COUNTER["RIGHT"] += 1
 
-    # 上下
+   
     if dz > threshold_z:
         ACTION_COUNTER["UP"] += 1
     elif dz < -threshold_z:
         ACTION_COUNTER["DOWN"] += 1
 
-    # 判断成立
+   
     for action, count in ACTION_COUNTER.items():
         if count >= hold_frames:
             for k in ACTION_COUNTER:
@@ -84,7 +84,7 @@ def detect_action(accel, baseline,
     return None
 
 
-# ========= 显示文本 =========
+
 def show_text(display, main_group, text, y_offset=0):
     while len(main_group) > 0:
         main_group.pop()
@@ -101,7 +101,7 @@ def show_text(display, main_group, text, y_offset=0):
     display.refresh()
 
 
-# ========= 游戏主循环（最新版，含 YOU WIN）=========
+
 def play_game(display, main_group, accelerometer, baseline, button, encoder, pixels, difficulty_level="Easy"):
 
     multiplier = DIFFICULTY_MULTIPLIER[difficulty_level]
@@ -116,7 +116,7 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, pix
         prev_x, prev_y, prev_z = baseline
         game_cleared = True  # 默认通关
 
-        # ======= 共 10 关 =======
+        
         for level in range(1, 11):
             actions_count = level * 2 + 2
             level_score = level * 10 * multiplier
@@ -130,7 +130,7 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, pix
             # ===== 每一步动作 =====
             for expected in sequence:
 
-                # ⭐ 同时显示 Level + Move（符合评分要求）
+                
                 show_text(
                     display,
                     main_group,
@@ -179,7 +179,7 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, pix
 
             break
 
-        # ======= 全部通过 → 勇者胜利 =======
+        
         if game_cleared:
             show_text(display, main_group, "YOU WIN!")
             buzzer_win()
@@ -191,27 +191,27 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, pix
         is_high, index = check_new_highscore(scores, score)
 
         if is_high:
-            # 显示 NEW HIGH SCORE 提示
+            
             show_text(display, main_group, "NEW HIGH SCORE!")
             time.sleep(1)
 
-            # 清空显示组，准备输入 initials
+            
             while len(main_group) > 0:
                 main_group.pop()
 
-            # 输入缩写
+           
             name = enter_initials(display, main_group, encoder, button)
 
-            # 插入分数并保存
+            
             scores = insert_new_score(scores, index, name, score)
             save_scores(scores)
 
         
-        # ======= 显示最终分数 =======
+        
         show_text(display, main_group, f"Final Score:{score}")
         time.sleep(1.5)
 
-        # ======= 显示排行榜 =======
+        
         scores = load_scores()
         board_text = "HIGH SCORES:\n"
         for entry in scores:
@@ -220,7 +220,7 @@ def play_game(display, main_group, accelerometer, baseline, button, encoder, pix
         show_text(display, main_group, board_text)
         time.sleep(3)
 
-        # ======= 最终分数 =======
+        
         show_text(display, main_group, f"Final Score:{score}")
         time.sleep(1.5)
 

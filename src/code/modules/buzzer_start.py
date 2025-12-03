@@ -2,7 +2,7 @@ import board
 import pwmio
 import time
 
-VOLUME = 1000  # 主音量，可调 0~65535
+VOLUME = 5000  
 
 def play_tone(freq, duration, pin=board.D1):
     buzzer = pwmio.PWMOut(pin, frequency=freq, duty_cycle=VOLUME)
