@@ -106,7 +106,10 @@ The enclosure design went through two iterations: a racket-inspired prototype an
   - Swinging the paddle created **complex 3D motion** that produced inconsistent accelerometer readings.  
 - **Decision:** abandoned due to manufacturability and sensing reliability concerns.  
 
-![Racket Version](image/v1.0.jpg)
+<p align="center">
+  <img src="image/v1.0.jpg" width="300">
+</p>
+
 
 ---
 
@@ -120,4 +123,6 @@ The enclosure design went through two iterations: a racket-inspired prototype an
   - **Side-mounted NeoPixel ring** with a narrow slit allows the LEDs to glow outward without blocking controls.  
 - **Result:** chosen as the final enclosure for its balance of usability, reliability, and manufacturability.  
 
-![Cylindrical Version](image/v2.0.jpg)
+<p align="center">
+  <img src="image/v2.0.jpg" width="300">
+</p>
