@@ -23,23 +23,29 @@ The game is powered by a **Xiao ESP32-C3**, using a combination of motion sensin
 ---
 
 ### **2. Gameplay Loop**
-Each level provides:
-- A **direction command** (Up / Down / Left / Right)
-- A **time limit** based on difficulty:  
-  - Easy: **5 s**  
-  - Normal: **3 s**  
-  - Hard: **1 s**
-- There are **10 levels per difficulty mode**, with increasing variety and speed.
 
-The OLED displays the **current score**, which is calculated as:
-- Difficulty multiplier:  
+#### **Actions and Timing**
+- Each level generates a sequence of actions:  
+`Actions per level = Level × 2 + 2`
+- Players must perform each action within a **reaction time** based on the chosen difficulty:  
+- **Easy:** 5 s  
+- **Normal:** 3 s  
+- **Hard:** 1 s
+
+#### **Scoring System**
+- Each level has a **level score**:
+`Level score = Level × 10 × Difficulty multiplier`
+- **Difficulty multiplier:**  
   - Easy ×1  
   - Normal ×2  
-  - Hard ×3  
-- Level bonus: **1–10 points** depending on progress.
+  - Hard ×3
+- **Per-action score**:
+`Per-action score = Level score ÷ Number of actions in that level`
+- **Total score** accumulates across all correctly completed actions.  
+- **Partial completion:** If the player fails an action (wrong direction or time exceeded), the current level ends immediately, but points for correctly performed actions before the mistake are retained.
 
 #### **High Score System**
-The game includes a simple **two-slot leaderboard**.  
+The game includes a simple **three-slot leaderboard**.  
 If the player achieves a score high enough to enter the ranking, they may use the rotary encoder to choose **three letters** to save their name.
 
 ---
@@ -90,13 +96,28 @@ Player then returns to the difficulty selection screen.
 
 ## **4. Enclosure Design Thought Process**
 
-The original concept was a **ping-pong paddle shape**, inspired by the game’s fast reaction movements. However, during circuit assembly, the paddle form factor proved too thin to house the necessary wiring. Attempts to reduce thickness caused jumper wires to break easily.
+The enclosure design went through two iterations: a racket-inspired prototype and the final cylindrical handheld. Below are the details for each version.
 
-Additionally, the motion of swinging a paddle introduced complex movement patterns that made reliable accelerometer detection extremely difficult.
+### **1.0 Racket Version**
+- **Concept:** ping-pong paddle shape, inspired by fast reaction movements.  
+- **Issues encountered:**  
+  - **Too thin** to reliably house OLED, accelerometer, rotary encoder, switch, and wiring.  
+  - Increasing thickness led to structural fragility and **broken jumper wires**.  
+  - Swinging the paddle created **complex 3D motion** that produced inconsistent accelerometer readings.  
+- **Decision:** abandoned due to manufacturability and sensing reliability concerns.  
 
-Because the LED strip, buzzer, and switch competed for limited side space, the enclosure design was simplified. The final design is a **cylindrical handheld shell**:
+![Racket Version](image/v1.0.jpg)
 
-- The **OLED, rotary encoder, switch, and buzzer** are all placed on the **front face**.
-- The **NeoPixel ring** remains on the side, where a narrow gap allows the LED glow to shine outward.
-- The shape is compact, durable, and optimized for consistent motion sensing.
+---
 
+### **2.0 Cylindrical Version**
+- **Concept:** compact cylindrical handheld shell optimized for robustness and consistent motion sensing.  
+- **Advantages:**  
+  - **Larger internal volume** for tidy wiring and secure component placement.  
+  - **Thicker walls** reduce risk of broken jumpers and improve durability.  
+  - **Stable single-hand grip** yields more consistent accelerometer data for gameplay.  
+  - **Front face layout:** OLED, rotary encoder, switch, and buzzer placed for intuitive interaction.  
+  - **Side-mounted NeoPixel ring** with a narrow slit allows the LEDs to glow outward without blocking controls.  
+- **Result:** chosen as the final enclosure for its balance of usability, reliability, and manufacturability.  
+
+![Cylindrical Version](image/v2.0.jpg)
